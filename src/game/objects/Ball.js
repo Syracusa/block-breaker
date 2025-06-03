@@ -24,7 +24,7 @@ export class Ball {
         graphics.destroy();
 
         this.sprite = gameScene.physics.add.sprite(gameScene.sys.game.config.width / 2, 100, 'ballTexture'); // Start ball a bit higher
-        this.sprite.setVelocity(200, 150);
+        this.sprite.setVelocity(400, 300);
         this.sprite.setCircle(20);
         this.sprite.setBounce(1);
         

@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import { Ball } from '../objects/Ball';
 import { Walls } from '../objects/Walls';
 import { Block } from '../objects/Block';
+import { Paddle } from '../objects/Paddle';
 
 export class Game extends Scene {
     constructor() {
@@ -10,6 +11,8 @@ export class Game extends Scene {
         this.walls = null;
         this.ball = null;
         this.blocks = null;
+        this.paddle = null;
+        this.cursors = null; // For keyboard input
     }
 
     create() {
@@ -20,14 +23,29 @@ export class Game extends Scene {
         this.ball = new Ball(this);
         this.walls = new Walls(this);
         this.blocks = new Block(this);
+        this.paddle = new Paddle(this);
+        this.cursors = this.input.keyboard.createCursorKeys();
 
         this.physics.add.collider(this.ball.sprite, this.walls.wallStaticGroup, this.handleBallWallCollision, null, this);
         this.physics.add.collider(this.ball.sprite, this.blocks.blockStaticGroup, this.hitBlock, null, this);
+        this.physics.add.collider(this.ball.sprite, this.paddle.sprite, this.hitPaddle, null, this);
 
         this.input.once('pointerdown', () => {
             console.log('Pointer Down!')
         });
 
+    }
+
+    update() {
+        const paddleSpeed = 500; // pixels per second for paddle movement
+
+        if (this.cursors.left.isDown) {
+            this.paddle.sprite.setVelocityX(-paddleSpeed);
+        } else if (this.cursors.right.isDown) {
+            this.paddle.sprite.setVelocityX(paddleSpeed);
+        } else {
+            this.paddle.sprite.setVelocityX(0); // Stop the paddle if no key is pressed
+        }
     }
 
     hitBlock(ball, block) {
@@ -50,19 +68,23 @@ export class Game extends Scene {
         // }
     }
 
+    hitPaddle(ball, paddle) {
+        console.log('hitpaddle');
+    }
+
     handleBallWallCollision(ball, wall) {
         console.log('collision!')
-        
+
         const speed = ball.body.velocity.length();
 
         let currentAngleRad = ball.body.velocity.angle();
 
         const maxAngleChangeDegrees = 30.0;
-        
+
         const randomAngleOffsetRad = Phaser.Math.DegToRad(Phaser.Math.FloatBetween(-maxAngleChangeDegrees, maxAngleChangeDegrees));
 
         let newAngleRad = currentAngleRad + randomAngleOffsetRad;
-        
+
         this.physics.velocityFromAngle(newAngleRad * 180 / 3.14, speed, ball.body.velocity);
     }
 }
