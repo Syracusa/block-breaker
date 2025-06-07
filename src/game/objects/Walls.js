@@ -25,7 +25,7 @@ export class Walls {
         //     .refreshBody();
         // Left wall
         this.wallStaticGroup
-            .create(0, scene.sys.game.config.height / 2, 'wallTexture')
+            .create(20, scene.sys.game.config.height / 2, 'wallTexture')
             .setDisplaySize(40, scene.sys.game.config.height)
             .refreshBody();
         // Right wall
