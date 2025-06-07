@@ -25,13 +25,13 @@ export class Walls {
         //     .refreshBody();
         // Left wall
         this.wallStaticGroup
-            .create(20, scene.sys.game.config.height / 2, 'wallTexture')
-            .setDisplaySize(40, scene.sys.game.config.height - 40)
+            .create(0, scene.sys.game.config.height / 2, 'wallTexture')
+            .setDisplaySize(40, scene.sys.game.config.height)
             .refreshBody();
         // Right wall
         this.wallStaticGroup
             .create(scene.sys.game.config.width - 20, scene.sys.game.config.height / 2, 'wallTexture')
-            .setDisplaySize(40, scene.sys.game.config.height - 40)
+            .setDisplaySize(40, scene.sys.game.config.height)
             .refreshBody();
 
         const wallGraphics = scene.add.graphics();

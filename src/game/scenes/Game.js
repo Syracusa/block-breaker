@@ -10,6 +10,9 @@ import { Paddle } from '../objects/Paddle';
 // 이전에 만들었던 레벨 디자인 파일을 import 합니다.
 import { LEVEL_DESIGNS } from '../data/levelDesigns.js';
 
+// 1단계에서 만든 색상 팔레트 파일을 import 합니다.
+import { GRADIENT_PALETTES } from '../data/colorPalettes.js';
+
 export class Game extends Scene {
     constructor() {
         super('Game');
@@ -31,21 +34,72 @@ export class Game extends Scene {
 
     create() {
         console.log(`Starting Level: ${this.selectedLevel}`);
-        this.cameras.main.setBackgroundColor(0x1a1a1a); // 배경색 변경
-        this.add.image(512, 384, 'background').setAlpha(0.5);
+
+        // --- 랜덤 그라데이션 배경 생성 ---
+        // 1. 팔레트에서 랜덤으로 색상 조합 선택
+        const randomPalette = Phaser.Math.RND.pick(GRADIENT_PALETTES);
+        // 2. 선택된 색상으로 그라데이션 배경 생성 함수 호출
+        this.createGradientBackground(randomPalette.start, randomPalette.end);
+        // --------------------------------
+
+        // 기존의 배경색/배경이미지 코드는 이제 필요 없습니다.
+        // this.cameras.main.setBackgroundColor(0x1a1a1a); // 이 줄 삭제 또는 주석 처리
+        // this.add.image(512, 384, 'background').setAlpha(0.5); // 이 줄도 잠시 주석 처리 (그라데이션 위에 겹쳐 보이므로)
 
         this.walls = new Walls(this);
         this.ball = new Ball(this);
+        // ... 이하 create 함수의 나머지 코드는 기존과 동일 ...
         this.paddle = new Paddle(this);
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        // 레벨 디자인에 따라 블록들을 생성합니다.
         this.createBlocksFromLayout();
 
-        // 충돌 설정: ball과 blocksGroup을 연결합니다.
         this.physics.add.collider(this.ball.sprite, this.walls.wallStaticGroup, this.handleBallWallCollision, null, this);
         this.physics.add.collider(this.ball.sprite, this.blocksGroup, this.hitBlock, null, this);
         this.physics.add.collider(this.ball.sprite, this.paddle.sprite, this.hitPaddle, null, this);
+    }
+    // Game.js 파일 내부
+
+    /**
+     * 두 색상을 받아와 세로 그라데이션 텍스처를 생성하고 배경으로 설정합니다.
+     * @param {number} startColor - 시작 색상 (예: 0xff0000)
+     * @param {number} endColor - 끝 색상 (예: 0x0000ff)
+     */
+    createGradientBackground(startColor, endColor) {
+        const textureKey = 'gradientBackground';
+        const width = this.sys.game.config.width;
+        const height = this.sys.game.config.height;
+
+        if (this.textures.exists(textureKey)) {
+            this.textures.remove(textureKey);
+        }
+
+        const graphics = this.add.graphics();
+
+        // --- 여기부터 수정된 부분 ---
+
+        // 1. 16진수 숫자(Hex Number)를 Phaser가 이해하는 Color 객체로 변환합니다.
+        //    이전의 new Phaser.Display.Color()가 잘못된 부분이었습니다.
+        const startColorObj = Phaser.Display.Color.ValueToColor(startColor);
+        const endColorObj = Phaser.Display.Color.ValueToColor(endColor);
+
+        // 세로로 1px 높이의 사각형들을 그리며 색상을 변경합니다.
+        for (let y = 0; y < height; y++) {
+            // 2. Phaser의 공식 색상 보간(Interpolation) 함수를 사용합니다.
+            //    이전 코드의 불필요한 interpolation 변수를 제거했습니다.
+            const interpolatedColor = Phaser.Display.Color.Interpolate.ColorWithColor(startColorObj, endColorObj, height, y);
+
+            // 보간된 색상으로 1px 높이의 사각형을 칠합니다.
+            graphics.fillStyle(interpolatedColor.color, 1);
+            graphics.fillRect(0, y, width, 1);
+        }
+        // --- 여기까지 수정된 부분 ---
+
+        graphics.generateTexture(textureKey, width, height);
+        graphics.destroy();
+
+        const bg = this.add.image(width / 2, height / 2, textureKey);
+        bg.setDepth(-1);
     }
 
     createBlocksFromLayout() {
