@@ -31,7 +31,7 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0 },
-            debug: true // Set to true to see physics bodies for walls and ball
+            debug: false // Set to true to see physics bodies for walls and ball
         }
     }
 };
