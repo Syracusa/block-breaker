@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { Ball } from '../objects/Ball';
 
 export class Preloader extends Scene
 {
@@ -29,11 +30,12 @@ export class Preloader extends Scene
 
     preload ()
     {
-        //  Load the assets for the game - Replace with your own assets
         this.load.setPath('assets');
-
         this.load.image('logo', 'logo.png');
+        
+        Ball.loadTexture(this);
     }
+
 
     create ()
     {

@@ -15,6 +15,10 @@ export class Game extends Scene {
         this.cursors = null; // For keyboard input
     }
 
+    preload() {
+        console.log('GAME PRELOAD!');
+    }
+
     create() {
         this.cameras.main.setBackgroundColor(0x00ff00);
 
