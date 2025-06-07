@@ -33,12 +33,7 @@ export class Walls {
             .create(scene.sys.game.config.width - 20, scene.sys.game.config.height / 2, 'wallTexture')
             .setDisplaySize(40, scene.sys.game.config.height - 40)
             .refreshBody();
-
-        this.wallStaticGroup
-            .create(200, 200, 'wallTexture')
-            .setDisplaySize(40, scene.sys.game.config.height - 40)
-            .refreshBody();
-
+            
         const wallGraphics = scene.add.graphics();
         wallGraphics.fillStyle(0x0000ff, 1); // Blue color for walls
         wallGraphics.fillRect(0, 0, 10, 10); // A small rectangle, size doesn't really matter here as we'll scale it
