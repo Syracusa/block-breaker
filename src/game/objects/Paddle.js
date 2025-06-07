@@ -14,8 +14,8 @@ export class Paddle {
         // Texture for the paddle
         const paddleGraphics = scene.add.graphics();
         paddleGraphics.fillStyle(0xffffff, 1); // White paddle
-        paddleGraphics.fillRect(0, 0, 100, 20); // Paddle dimensions
-        paddleGraphics.generateTexture('paddleTexture', 100, 20);
+        paddleGraphics.fillRect(0, 0, 200, 20); // Paddle dimensions
+        paddleGraphics.generateTexture('paddleTexture', 200, 20);
         paddleGraphics.destroy();
 
 

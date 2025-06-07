@@ -39,6 +39,8 @@ export class Game extends Scene {
     update() {
         const paddleSpeed = 500; // pixels per second for paddle movement
 
+        // console.log(this.ball.getPosition());
+
         if (this.cursors.left.isDown) {
             this.paddle.sprite.setVelocityX(-paddleSpeed);
         } else if (this.cursors.right.isDown) {
@@ -46,6 +48,13 @@ export class Game extends Scene {
         } else {
             this.paddle.sprite.setVelocityX(0); // Stop the paddle if no key is pressed
         }
+
+        if (this.ball.isFall()) {
+            /* Game over */
+            console.log('game over!');
+            this.scene.start('GameOver');
+        }
+        
     }
 
     hitBlock(ball, block) {
