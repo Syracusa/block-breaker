@@ -1,15 +1,12 @@
 import { Scene } from 'phaser';
 import { screenDef } from '../../def';
 
-export class MainMenu extends Scene
-{
-    constructor ()
-    {
+export class MainMenu extends Scene {
+    constructor() {
         super('MainMenu');
     }
 
-    create ()
-    {
+    create() {
         this.add.image(512, 384, 'background');
 
         this.add.text(screenDef.width / 2, 300, 'Block Breaker', {
@@ -25,7 +22,7 @@ export class MainMenu extends Scene
         }).setOrigin(0.5);
 
         this.input.once('pointerdown', () => {
-            this.scene.start('Game');
+            this.scene.start('LevelSelect'); // 레벨 선택 씬으로 시작
         });
     }
 }

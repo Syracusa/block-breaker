@@ -13,6 +13,13 @@ export class Game extends Scene {
         this.blocks = null;
         this.paddle = null;
         this.cursors = null; // For keyboard input
+
+        this.selectedLevel = 1; // 기본 레벨
+    }
+
+    init(data) {
+        // 데이터가 전달되었으면 해당 레벨을, 아니면 기본 레벨 1을 사용
+        this.selectedLevel = data.level || 1;
     }
 
     preload() {
@@ -20,6 +27,8 @@ export class Game extends Scene {
     }
 
     create() {
+        console.log(`Starting Level: ${this.selectedLevel}`);
+
         this.cameras.main.setBackgroundColor(0x00ff00);
 
         this.add.image(512, 384, 'background').setAlpha(0.5);
@@ -58,7 +67,7 @@ export class Game extends Scene {
             console.log('game over!');
             this.scene.start('GameOver');
         }
-        
+
     }
 
     hitBlock(ball, block) {

@@ -2,6 +2,7 @@ import { screenDef } from '../def';
 import { Boot } from './scenes/Boot';
 import { Game as MainGame } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
+import LevelSelect from './scenes/LevelSelect';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
 import { AUTO, Game } from 'phaser';
@@ -22,6 +23,7 @@ const config = {
         Boot,
         Preloader,
         MainMenu,
+        LevelSelect,
         MainGame,
         GameOver
     ],
