@@ -1,3 +1,4 @@
+import { screenDef } from '../def';
 import { Boot } from './scenes/Boot';
 import { Game as MainGame } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
@@ -9,8 +10,8 @@ import { AUTO, Game } from 'phaser';
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config = {
     type: AUTO,
-    width: 768,
-    height: 1024,
+    width: screenDef.width,
+    height: screenDef.height,
     parent: 'game-container',
     backgroundColor: '#028af8',
     scale: {
