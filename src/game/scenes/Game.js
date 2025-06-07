@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { Ball } from '../objects/Ball';
 import { Walls } from '../objects/Walls';
-import { Block } from '../objects/Block';
+import { Blocks } from '../objects/Block';
 import { Paddle } from '../objects/Paddle';
 
 export class Game extends Scene {
@@ -35,7 +35,7 @@ export class Game extends Scene {
 
         this.ball = new Ball(this);
         this.walls = new Walls(this);
-        this.blocks = new Block(this);
+        this.blocks = new Blocks(this);
         this.paddle = new Paddle(this);
         this.cursors = this.input.keyboard.createCursorKeys();
 

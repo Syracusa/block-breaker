@@ -1,7 +1,7 @@
 import { Scene } from "phaser";
 
 
-export class Block {
+export class Blocks {
 
     /** @type {Scene} */
     scene;
