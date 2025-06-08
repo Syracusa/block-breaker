@@ -33,3 +33,35 @@ export function createGradientBackground(scene, startColor, endColor) {
     const bg = scene.add.image(width / 2, height / 2, textureKey);
     bg.setDepth(-1);
 }
+
+
+/**
+ * 게임에 필요한 아이템 텍스처들을 미리 생성합니다.
+ * @param {Phaser.Scene} scene - 텍스처를 추가할 씬 객체
+ */
+export function createItemTextures(scene) {
+    const itemSize = 30;
+    const itemGraphics = scene.add.graphics();
+    
+    // PADDLE_WIDER 아이템 (파란색 'W')
+    itemGraphics.fillStyle(0x0000ff);
+    itemGraphics.fillRect(0, 0, itemSize, itemSize);
+    const textW = scene.add.text(itemSize / 2, itemSize / 2, 'W', { fontSize: '20px', fill: '#fff' }).setOrigin(0.5);
+    // generateTexture는 DisplayObject를 직접 받을 수 있습니다.
+    itemGraphics.generateTexture('item_PADDLE_WIDER', itemSize, itemSize);
+    textW.destroy(); // 텍스트 객체는 텍스처 생성 후 파괴
+
+    // BALL_FASTER 아이템 (빨간색 'F')
+    itemGraphics.clear().fillStyle(0xff0000).fillRect(0, 0, itemSize, itemSize);
+    const textF = scene.add.text(itemSize / 2, itemSize / 2, 'F', { fontSize: '20px', fill: '#fff' }).setOrigin(0.5);
+    itemGraphics.generateTexture('item_BALL_FASTER', itemSize, itemSize);
+    textF.destroy();
+
+    // EXTRA_SCORE 아이템 (노란색 '$')
+    itemGraphics.clear().fillStyle(0xffff00).fillRect(0, 0, itemSize, itemSize);
+    const textS = scene.add.text(itemSize / 2, itemSize / 2, '$', { fontSize: '20px', fill: '#000' }).setOrigin(0.5);
+    itemGraphics.generateTexture('item_EXTRA_SCORE', itemSize, itemSize);
+    textS.destroy();
+
+    itemGraphics.destroy(); // 그래픽 객체는 모두 사용 후 파괴
+}
