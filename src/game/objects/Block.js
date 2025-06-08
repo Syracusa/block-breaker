@@ -1,5 +1,6 @@
 // ./game/objects/Block.js
 
+import { ITEM_TYPES } from "../data/itemTypes";
 import { Item } from "./Item";
 
 // '블록 한 개'를 정의하는 클래스입니다. Phaser의 Sprite 객체를 상속받습니다.
@@ -49,7 +50,10 @@ export class Block extends Phaser.Physics.Arcade.Sprite {
             // 파괴되기 직전, 드랍할 아이템이 있는지 확인
             if (this.itemToDrop) {
                 // 아이템 생성
+                console.log(this.itemToDrop);
                 new Item(this.scene, this.x, this.y, this.itemToDrop);
+            } else {
+                new Item(this.scene, this.x, this.y, ITEM_TYPES.MULTI_BALL);
             }
             this.destroy();
         } else {
