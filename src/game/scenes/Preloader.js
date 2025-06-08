@@ -32,7 +32,7 @@ export class Preloader extends Scene {
         this.load.audio('block_break', 'audio/Select_1.wav');
         this.load.audio('paddle_hit', 'audio/Jump_1.wav');
         this.load.audio('item_get', 'audio/Big_Egg_collect_1.wav');
-
+        this.load.audio('ui_click', 'audio/Fruit_collect_1.wav');
     }
 
 

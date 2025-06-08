@@ -25,6 +25,7 @@ export class MainMenu extends Scene {
         }).setOrigin(0.5);
 
         this.input.once('pointerdown', () => {
+            this.sound.play('ui_click');
             this.scene.start('LevelSelect'); // 레벨 선택 씬으로 시작
         });
     }

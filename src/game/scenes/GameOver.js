@@ -24,7 +24,7 @@ export class GameOver extends Scene
         }).setOrigin(0.5);
 
         this.input.once('pointerdown', () => {
-
+            this.sound.play('ui_click');
             this.scene.start('MainMenu');
 
         });
