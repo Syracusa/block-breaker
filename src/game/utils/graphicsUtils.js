@@ -36,42 +36,37 @@ export function createGradientBackground(scene, startColor, endColor) {
 
 
 /**
- * 게임에 필요한 아이템 텍스처들을 미리 생성합니다. (RenderTexture를 사용한 수정 버전)
+ * 게임에 필요한 아이템 텍스처들을 미리 생성합니다.
  * @param {Phaser.Scene} scene - 텍스처를 추가할 씬 객체
  */
 export function createItemTextures(scene) {
+    // --- 아래 코드를 추가해주세요 ---
+    // 아이템 텍스처 중 하나라도 이미 존재한다면, 모든 텍스처가 이미 생성된 것으로 간주하고 함수를 즉시 종료합니다.
+    if (scene.textures.exists('item_PADDLE_WIDER')) {
+        return;
+    }
+    // ----------------------------
+
     const itemSize = 30;
 
-    // --- RenderTexture를 사용하여 텍스처를 생성하는 헬퍼 함수 ---
     const createTexture = (key, bgColor, letter, letterColor) => {
-        // 1. RenderTexture 생성: 임시로 그림을 그릴 보이지 않는 캔버스입니다.
         const rt = scene.add.renderTexture(0, 0, itemSize, itemSize);
-
-        // 2. 배경색 사각형 생성
         const bg = scene.add.graphics().fillStyle(bgColor).fillRect(0, 0, itemSize, itemSize);
-        
-        // 3. 글자를 원점(0, 0)에 생성합니다. 위치 지정은 draw에서 할 것입니다.
         const text = scene.add.text(0, 0, letter, {
             fontSize: '20px',
             fill: letterColor,
             fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        // 4. RenderTexture에 배경과 글자를 차례로 그립니다.
         rt.draw(bg, 0, 0);
         rt.draw(text, itemSize / 2, itemSize / 2);
 
-        // 5. 완성된 RenderTexture의 내용을 게임의 텍스처 매니저에 저장합니다.
         rt.saveTexture(key);
-
-        // 6. 임시로 사용했던 객체들은 파괴합니다.
         bg.destroy();
         text.destroy();
         rt.destroy();
     };
-    // ----------------------------------------------------
 
-    // 위 헬퍼 함수를 이용해 각 아이템 텍스처를 생성합니다.
     createTexture('item_PADDLE_WIDER', 0x0000ff, 'W', '#fff');
     createTexture('item_BALL_FASTER', 0xff0000, 'F', '#fff');
     createTexture('item_EXTRA_SCORE', 0xffff00, '$', '#000');
