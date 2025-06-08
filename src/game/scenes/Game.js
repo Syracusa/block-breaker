@@ -176,6 +176,8 @@ export class Game extends Scene {
     }
 
     handleBallWallCollision(ball, wall) {
+        this.sound.play('wall_hit', { volume: 0.01 });
+
         const speed = ball.body.velocity.length();
         let currentAngleRad = ball.body.velocity.angle();
         const maxAngleChangeDegrees = 10.0;
