@@ -35,6 +35,7 @@ const applyMultiBall = (scene) => {
         if (!parentBall.active) return;
 
         for (let i = 0; i < 2; i++) {
+
             const speed = parentBall.body.velocity.length();
             const angleOffset = Phaser.Math.DegToRad(Phaser.Math.RND.pick([-30, 30])); // 각도를 좀 더 확실하게
             const newAngle = parentBall.body.velocity.angle() + angleOffset;

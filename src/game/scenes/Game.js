@@ -35,14 +35,20 @@ export class Game extends Scene {
 
     // --- ▼▼▼ 공 생성 및 설정 전용 함수 추가 ▼▼▼ ---
     _createBall(x, y, vx, vy) {
+        if (this.balls.countActive(true) >= 100) {
+            console.log('최대 공 개수(100개)에 도달하여 더 이상 생성되지 않습니다.');
+            return null; // 공을 생성하지 않고 함수를 즉시 종료합니다.
+        }
+        console.log(this.balls.countActive(true));
+
         // 1. 그룹을 통해 비활성 상태의 공을 가져오거나 생성합니다.
         const ball = this.balls.get(x, y);
-        
+
         if (ball) {
             // 2. 공을 활성화하고 화면에 보이게 합니다.
             ball.setActive(true);
             ball.setVisible(true);
-            
+
             // 3. 물리 속성을 여기서 모두 설정합니다.
             ball.setCircle(10);
             ball.setBounce(1);
@@ -81,16 +87,16 @@ export class Game extends Scene {
     _createCoreObjects() {
         this.walls = new Walls(this);
         this.paddle = new Paddle(this);
-        
+
         this.balls = this.physics.add.group({
             classType: Ball
         });
 
         // 헬퍼 함수를 이용해 첫 번째 공을 생성하고 설정합니다.
         this._createBall(
-            this.sys.game.config.width / 2, 
-            this.sys.game.config.height / 2, 
-            400, 
+            this.sys.game.config.width / 2,
+            this.sys.game.config.height / 2,
+            400,
             300
         );
     }
@@ -165,7 +171,7 @@ export class Game extends Scene {
 
         const speed = ball.body.velocity.length();
         let currentAngleRad = ball.body.velocity.angle();
-        const maxAngleChangeDegrees = 100.0;
+        const maxAngleChangeDegrees = 10.0;
         const randomAngleOffsetRad = Phaser.Math.DegToRad(Phaser.Math.FloatBetween(-maxAngleChangeDegrees, maxAngleChangeDegrees));
         let newAngleRad = currentAngleRad + randomAngleOffsetRad;
 
