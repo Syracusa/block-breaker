@@ -11,9 +11,19 @@ import { BlockManager } from '../managers/BlockManager.js';
 import { UIManager } from '../managers/UIManager.js';
 
 export class Game extends Scene {
+    walls = null;
+    balls = null;
+    paddle = null;
+    blocksGroup = null;
+    itemsGroup = null;
+    uiManager = null;
+
+    score = 0;
+    selectedLevel = 1;
+    gameState = 'playing';
+
     constructor() {
         super('Game');
-        this._initVars();
     }
 
     init(data) {
@@ -25,7 +35,6 @@ export class Game extends Scene {
 
     preload() {
         Ball.preload(this);
-
     }
 
     create() {
@@ -72,22 +81,6 @@ export class Game extends Scene {
     }
 
     // --- 내부 초기화 및 생성 함수들 ---
-
-    _initVars() {
-        this.walls = null;
-        this.balls = null;
-        this.paddle = null;
-        this.cursors = null;
-        this.blocksGroup = null;
-        this.itemsGroup = null;
-        this.score = 0;
-        this.scoreText = null;
-        this.selectedLevel = 1;
-
-        this.gameState = 'playing'; // ◀️ 게임 상태 변수 추가 ('playing', 'cleared', 'gameOver')
-        this.uiManager = null;
-
-    }
 
     _createUI() {
         // UIManager 인스턴스를 생성하고, 초기 점수 UI를 만듭니다.
@@ -139,7 +132,6 @@ export class Game extends Scene {
         });
 
         if (this.balls.countActive(true) === 0 && this.gameState === 'playing') {
-            // --- ▼▼▼ 이 부분을 수정합니다 ▼▼▼ ---
             this.gameState = 'gameOver';
             console.log(this.uiManager);
             this.uiManager.showEndLevelUI(false);
