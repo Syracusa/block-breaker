@@ -9,6 +9,7 @@ import { ITEM_EFFECTS } from '../data/itemEffects.js';
 import { createGradientBackground, createItemTextures } from '../utils/graphicsUtils.js';
 import { BlockManager } from '../managers/BlockManager.js';
 import { UIManager } from '../managers/UIManager.js';
+import { progressManager } from '../managers/ProgressManager.js';
 
 export class Game extends Scene {
     walls = null;
@@ -38,11 +39,17 @@ export class Game extends Scene {
     }
 
     create() {
+        const IS_DEBUG_MODE = true; // 개발 중에는 true, 배포 시에는 false로 변경
+
         this._createBackground();
         this._createCoreObjects();
         this._createGroups();
         this._createUI();
         this._setupPhysics();
+
+        if (IS_DEBUG_MODE) {
+            this.input.keyboard.on('keydown-C', this._forceLevelClear, this);
+        }
     }
 
     // --- ▼▼▼ 공 생성 및 설정 전용 함수 추가 ▼▼▼ ---
@@ -157,6 +164,10 @@ export class Game extends Scene {
         if (this.blocksGroup.countActive(true) === 0) {
             console.log('All blocks cleared! Level Complete!');
             this.gameState = 'cleared';
+
+            // 다음 레벨을 해금하도록 진행 상황을 저장합니다.
+            progressManager.saveProgress(this.selectedLevel + 1);
+
             this.uiManager.showEndLevelUI(true); // ◀️ uiManager를 통해 호출
         }
     }
@@ -185,5 +196,20 @@ export class Game extends Scene {
         let newAngleRad = currentAngleRad + randomAngleOffsetRad;
 
         this.physics.velocityFromAngle(Phaser.Math.RadToDeg(newAngleRad), speed, ball.body.velocity);
+    }
+
+    _forceLevelClear() {
+        // 이미 게임이 끝난 상태라면 아무것도 하지 않음
+        if (this.gameState !== 'playing') {
+            return;
+        }
+
+        console.log('%c[DEBUG] Level Cleared by Force!', 'color: yellow; font-weight: bold;');
+
+        // 2. 게임 클리어 로직을 그대로 실행합니다.
+        this.gameState = 'cleared';
+
+        progressManager.saveProgress(this.selectedLevel + 1);
+        this.uiManager.showEndLevelUI(true);
     }
 }
