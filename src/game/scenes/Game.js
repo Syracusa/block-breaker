@@ -144,6 +144,8 @@ export class Game extends Scene {
     // --- 물리 충돌 콜백 함수들 ---
 
     hitBlock(ball, block) {
+        this.sound.play('block_break');
+
         block.hit();
         this.score += 10;
         this.scoreText.setText('Score: ' + this.score);
@@ -155,10 +157,12 @@ export class Game extends Scene {
     }
 
     hitPaddle(ball, paddle) {
+        this.sound.play('paddle_hit', { volume: 0.5 });
         // ... 패들 히트 로직 ...
     }
 
     collectItem(paddle, item) {
+        this.sound.play('item_get', { volume: 0.5 });
         const effect = ITEM_EFFECTS[item.itemType];
         if (effect) {
             effect(this);
