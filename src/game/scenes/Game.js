@@ -59,13 +59,34 @@ export class Game extends Scene {
     }
 
     hitBlock(ball, block) {
+        // 이제 block은 체력(health)과 hit() 메소드를 가진 Block 객체입니다.
         block.hit();
+
+        // 모든 블록이 파괴되었는지 확인
         if (this.blocksGroup.countActive(true) === 0) {
             console.log('All blocks cleared! Level Complete!');
-            this.scene.start('MainMenu');
+            // 다음 레벨로 가거나, 승리 화면을 보여줄 수 있습니다.
+            this.scene.start('MainMenu'); // 예시로 메인메뉴로 돌아갑니다.
         }
     }
 
-    hitPaddle(ball, paddle) { /* ... */ }
-    handleBallWallCollision(ball, wall) { /* ... */ }
+    hitPaddle(ball, paddle) {
+        console.log('hitpaddle');
+    }
+
+    handleBallWallCollision(ball, wall) {
+        console.log('collision!')
+
+        const speed = ball.body.velocity.length();
+
+        let currentAngleRad = ball.body.velocity.angle();
+
+        const maxAngleChangeDegrees = 30.0;
+
+        const randomAngleOffsetRad = Phaser.Math.DegToRad(Phaser.Math.FloatBetween(-maxAngleChangeDegrees, maxAngleChangeDegrees));
+
+        let newAngleRad = currentAngleRad + randomAngleOffsetRad;
+
+        this.physics.velocityFromAngle(newAngleRad * 180 / 3.14, speed, ball.body.velocity);
+    }
 }
