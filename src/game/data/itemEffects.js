@@ -25,7 +25,7 @@ const applyBallFaster = (scene) => {
 
 const applyExtraScore = (scene) => {
     scene.score += 100;
-    scene.uiManager.updateScore(this.score);
+    scene.uiManager.updateScore(scene.score);
 };
 
 const applyMultiBall = (scene) => {
