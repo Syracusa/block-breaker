@@ -43,12 +43,23 @@ export class BlockManager {
         const startX = totalHorizontalPadding / 2;
 
         levelLayout.forEach((row, rowIndex) => {
-            row.forEach((blockType, colIndex) => {
-                if (blockType > 0) {
+            row.forEach((blockData, colIndex) => {
+                // blockData가 0(빈 공간)이 아닐 때
+                if (blockData) {
                     const x = startX + colIndex * (blockWidth + spacing) + blockWidth / 2;
                     const y = topOffsetY + rowIndex * (blockHeight + spacing) + blockHeight / 2;
-                    
-                    const block = new Block(scene, x, y, blockType);
+
+                    let blockType = blockData;
+                    let itemToDrop = null;
+
+                    // blockData가 객체 형태이면, 타입과 아이템 정보를 분리
+                    if (typeof blockData === 'object') {
+                        blockType = blockData.type;
+                        itemToDrop = blockData.item;
+                    }
+
+                    // Block 생성자에 아이템 정보를 함께 전달
+                    const block = new Block(scene, x, y, blockType, itemToDrop);
                     blocksGroup.add(block);
                 }
             });

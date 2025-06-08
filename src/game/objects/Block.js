@@ -1,14 +1,20 @@
 // ./game/objects/Block.js
 
+import { Item } from "./Item";
+
 // '블록 한 개'를 정의하는 클래스입니다. Phaser의 Sprite 객체를 상속받습니다.
 export class Block extends Phaser.Physics.Arcade.Sprite {
 
-    constructor(scene, x, y, blockType) {
+    constructor(scene, x, y, blockType, itemToDrop = null) {
         // 'blockTexture'는 Game.js에서 미리 만들어 둔 텍스처를 사용합니다.
         super(scene, x, y, 'blockTexture');
 
         this.blockType = blockType;
         this.health = 1; // 기본 체력
+
+        this.blockType = blockType;
+        this.itemToDrop = itemToDrop; // 아이템 정보 저장
+        this.health = 1;
 
         // blockType에 따라 블록의 속성을 다르게 설정합니다.
         switch (this.blockType) {
@@ -36,16 +42,18 @@ export class Block extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this, true); // true는 static body로 만듭니다.
     }
 
-    // 블록이 맞았을 때 호출될 메소드
     hit() {
         this.health--;
 
         if (this.health <= 0) {
-            // TODO: 블록 파괴 애니메이션이나 사운드 추가
+            // 파괴되기 직전, 드랍할 아이템이 있는지 확인
+            if (this.itemToDrop) {
+                // 아이템 생성
+                new Item(this.scene, this.x, this.y, this.itemToDrop);
+            }
             this.destroy();
         } else {
-            // 체력이 깎였을 때의 시각적 효과 (예: 색상 변경)
-            this.setTint(0xff0000); // 체력이 깎이면 빨간색으로
+            this.setTint(0xff0000);
         }
     }
 }
