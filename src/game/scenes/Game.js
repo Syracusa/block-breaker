@@ -26,6 +26,8 @@ export class Game extends Scene {
         this._createGroups();
         this._createUI();
         this._setupPhysics();
+
+        this.events.on('shutdown', this._shutdown, this);
     }
 
     update() {
@@ -149,5 +151,15 @@ export class Game extends Scene {
 
         // PI 값은 Phaser.Math.PI를 사용하는 것이 더 정확합니다.
         this.physics.velocityFromAngle(Phaser.Math.RadToDeg(newAngleRad), speed, ball.body.velocity);
+    }
+
+    _shutdown() {
+        console.log('Game scene shutting down. Cleaning up all objects.');
+
+        this.balls.forEach(ball => {
+            ball.sprite.destroy();
+        });
+
+        this.balls = [];
     }
 }
