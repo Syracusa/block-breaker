@@ -28,33 +28,21 @@ const applyExtraScore = (scene) => {
     scene.scoreText.setText('Score: ' + scene.score);
 };
 
-// 멀티볼 효과 함수
 const applyMultiBall = (scene) => {
-    // 현재 활성화된 모든 공들을 복사할 원본으로 사용합니다.
-    const currentBalls = scene.balls.slice(); // .slice()로 배열을 복사하여 안전하게 순회
+    const currentBalls = scene.balls.getChildren().slice();
 
-    currentBalls.forEach(ballObject => {
-        // 기존 공 1개당 새로운 공 1개를 추가로 생성합니다. (너무 많으면 어려우니 1개씩만)
-        const newBall = new Ball(scene);
-        const parentSprite = ballObject.sprite;
+    currentBalls.forEach(parentBall => {
+        if (!parentBall.active) return;
 
-        // 새 공의 위치를 원본 공의 위치와 똑같이 설정
-        newBall.sprite.setPosition(parentSprite.x, parentSprite.y);
+        for (let i = 0; i < 2; i++) {
+            const speed = parentBall.body.velocity.length();
+            const angleOffset = Phaser.Math.DegToRad(Phaser.Math.RND.pick([-30, 30])); // 각도를 좀 더 확실하게
+            const newAngle = parentBall.body.velocity.angle() + angleOffset;
+            const velocity = scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(newAngle), speed);
 
-        // 새 공의 속도를 원본 공의 속도와 비슷하지만 약간 다른 각도로 설정
-        const speed = parentSprite.body.velocity.length();
-        const angleOffset = Phaser.Math.DegToRad(30); // 30도 각도로 틀어줌
-        const newAngle = parentSprite.body.velocity.angle() + angleOffset;
-
-        const velocity = scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(newAngle), speed);
-        newBall.sprite.setVelocity(velocity.x, velocity.y);
-
-        // 생성된 새 Ball 객체를 Game 씬의 balls 배열에 추가
-        scene.balls.push(newBall);
-
-        // ★★★ 가장 중요한 부분 ★★★
-        // 새로 생성된 공(newBall.sprite)에 대해서도 똑같은 충돌 규칙을 설정해줍니다.
-        scene._addCollidersForBall(newBall.sprite);
+            // ✅ Game 씬의 헬퍼 함수를 호출하여 공 생성과 설정을 한번에 처리!
+            scene._createBall(parentBall.x, parentBall.y, velocity.x, velocity.y);
+        }
     });
 };
 

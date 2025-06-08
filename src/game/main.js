@@ -2,6 +2,7 @@ import { screenDef } from '../def';
 import { Boot } from './scenes/Boot';
 import { Game as MainGame } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
+import { TestScene } from './scenes/TestScene';
 import LevelSelect from './scenes/LevelSelect';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
@@ -20,6 +21,7 @@ const config = {
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
     scene: [
+        // TestScene,
         Boot,
         Preloader,
         MainMenu,

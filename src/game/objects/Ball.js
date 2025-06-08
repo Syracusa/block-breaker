@@ -1,55 +1,28 @@
-import { Scene } from "phaser";
+// ./game/objects/Ball.js
 
+import { Scene, Physics } from 'phaser';
 
-export class Ball {
-
-    /** @type {SpriteWithDynamicLogic} */
-    sprite;
-
-    /** @type {Scene} */
-    scene;
-
+export class Ball extends Physics.Arcade.Sprite {
     static textureLoaded = false;
-    static loadTexture(scene) {
-        if (Ball.textureLoaded)
-            return;
-        const graphics = scene.add.graphics();
-        graphics.fillStyle(0xff0000, 1); // Red color
-        graphics.fillCircle(20, 20, 20);
-        graphics.generateTexture('ballTexture', 40, 40);
-        graphics.destroy();
+
+    static preload(scene) {
+        if (Ball.textureLoaded) return;
         Ball.textureLoaded = true;
+        
+        const graphics = scene.add.graphics();
+        graphics.fillStyle(0xff0000, 1);
+        graphics.fillCircle(10, 10, 10);
+        graphics.generateTexture('ballTexture', 20, 20);
+        graphics.destroy();
     }
 
     /**
-     * 
-     * @param {Scene} scene 
+     * @param {Scene} scene
+     * @param {number} x
+     * @param {number} y
      */
-    constructor(scene) {
-        Ball.loadTexture();
-        this.scene = scene;
-        console.log(scene);
-
-        this.sprite = scene.physics.add.sprite(scene.sys.game.config.width / 2, 100, 'ballTexture'); // Start ball a bit higher
-        this.sprite.setVelocity(400, 300);
-        this.sprite.setCircle(20);
-        this.sprite.setBounce(1);
-    }
-
-    destroy() {
-        // 이 Ball 객체가 관리하는 sprite를 파괴합니다.
-        this.sprite.destroy();
-    }
-
-    getPosition() {
-        return { x: this.sprite.x, y: this.sprite.y };
-    }
-
-    isFall() {
-        const pos = this.getPosition();
-        if (pos.y > this.scene.sys.game.config.height) {
-            return true;
-        }
-        return false;
+    constructor(scene, x, y) {
+        // 부모 생성자 호출 외에는 아무것도 하지 않습니다.
+        super(scene, x, y, 'ballTexture');
     }
 }

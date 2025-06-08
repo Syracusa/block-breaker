@@ -20,14 +20,36 @@ export class Game extends Scene {
         this.score = 0; // 레벨이 시작될 때마다 점수 초기화
     }
 
+    preload() {
+        Ball.preload(this);
+
+    }
+
     create() {
         this._createBackground();
         this._createCoreObjects();
         this._createGroups();
         this._createUI();
         this._setupPhysics();
+    }
 
-        this.events.on('shutdown', this._shutdown, this);
+    // --- ▼▼▼ 공 생성 및 설정 전용 함수 추가 ▼▼▼ ---
+    _createBall(x, y, vx, vy) {
+        // 1. 그룹을 통해 비활성 상태의 공을 가져오거나 생성합니다.
+        const ball = this.balls.get(x, y);
+        
+        if (ball) {
+            // 2. 공을 활성화하고 화면에 보이게 합니다.
+            ball.setActive(true);
+            ball.setVisible(true);
+            
+            // 3. 물리 속성을 여기서 모두 설정합니다.
+            ball.setCircle(10);
+            ball.setBounce(1);
+            // ball.setCollideWorldBounds(true);
+            ball.setVelocity(vx, vy);
+        }
+        return ball;
     }
 
     update() {
@@ -40,7 +62,7 @@ export class Game extends Scene {
 
     _initVars() {
         this.walls = null;
-        this.balls = [];
+        this.balls = null;
         this.paddle = null;
         this.cursors = null;
         this.blocksGroup = null;
@@ -58,8 +80,19 @@ export class Game extends Scene {
 
     _createCoreObjects() {
         this.walls = new Walls(this);
-        this.balls.push(new Ball(this)); // ◀️ 배열에 첫 번째 공 추가
         this.paddle = new Paddle(this);
+        
+        this.balls = this.physics.add.group({
+            classType: Ball
+        });
+
+        // 헬퍼 함수를 이용해 첫 번째 공을 생성하고 설정합니다.
+        this._createBall(
+            this.sys.game.config.width / 2, 
+            this.sys.game.config.height / 2, 
+            400, 
+            300
+        );
     }
 
     _createGroups() {
@@ -71,41 +104,28 @@ export class Game extends Scene {
         this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
     }
 
-    /**
-     * 공 스프라이트 하나에 대한 모든 충돌 규칙을 설정합니다.
-     * @param {Phaser.Physics.Arcade.Sprite} ballSprite - 충돌을 설정할 공 스프라이트
-     */
-    _addCollidersForBall(ballSprite) {
-        this.physics.add.collider(ballSprite, this.walls.wallStaticGroup, this.handleBallWallCollision, null, this);
-        this.physics.add.collider(ballSprite, this.blocksGroup, this.hitBlock, null, this);
-        this.physics.add.collider(ballSprite, this.paddle.sprite, this.hitPaddle, null, this);
-    }
-
     _setupPhysics() {
-        this.balls.forEach(ball => {
-            this._addCollidersForBall(ball.sprite);
-        });
+        // --- 충돌 설정 최종 변경 ---
+        // 이제 그룹 자체를 충돌 대상으로 지정하면 모든 문제가 해결됩니다.
+        // this.physics.add.collider(this.balls, this.walls.wallStaticGroup, this.handleBallWallCollision, null, this);
 
+        this.physics.add.collider(this.balls, this.walls.wallStaticGroup, this.handleBallWallCollision, null, this);
+        this.physics.add.collider(this.balls, this.blocksGroup, this.hitBlock, null, this);
+        this.physics.add.collider(this.balls, this.paddle.sprite, this.hitPaddle, null, this);
         this.physics.add.overlap(this.paddle.sprite, this.itemsGroup, this.collectItem, null, this);
     }
 
-    // --- 업데이트 헬퍼 함수들 ---
     _checkBallFall() {
-        // filter를 사용해 떨어진 공을 제외한 새 배열을 만듭니다.
-        this.balls = this.balls.filter(ball => {
-            if (ball.isFall()) {
-                ball.destroy(); // 공의 스프라이트 파괴
-                return false; // 이 공은 새 배열에서 제외
+        this.balls.getChildren().forEach(ball => {
+            if (ball.y > this.sys.game.config.height) {
+                ball.destroy(); // 이제 내장된 destroy 메소드를 호출합니다.
             }
-            return true; // 이 공은 유지
         });
 
-        // 배열의 길이가 0이면 (모든 공이 떨어졌으면) 게임오버
-        if (this.balls.length === 0) {
+        if (this.balls.countActive(true) === 0) {
             this.scene.start('GameOver', { score: this.score });
         }
     }
-
 
     _cleanupItems() {
         this.itemsGroup.getChildren().forEach(item => {
@@ -145,21 +165,11 @@ export class Game extends Scene {
 
         const speed = ball.body.velocity.length();
         let currentAngleRad = ball.body.velocity.angle();
-        const maxAngleChangeDegrees = 20.0;
+        const maxAngleChangeDegrees = 100.0;
         const randomAngleOffsetRad = Phaser.Math.DegToRad(Phaser.Math.FloatBetween(-maxAngleChangeDegrees, maxAngleChangeDegrees));
         let newAngleRad = currentAngleRad + randomAngleOffsetRad;
 
         // PI 값은 Phaser.Math.PI를 사용하는 것이 더 정확합니다.
         this.physics.velocityFromAngle(Phaser.Math.RadToDeg(newAngleRad), speed, ball.body.velocity);
-    }
-
-    _shutdown() {
-        console.log('Game scene shutting down. Cleaning up all objects.');
-
-        this.balls.forEach(ball => {
-            ball.sprite.destroy();
-        });
-
-        this.balls = [];
     }
 }

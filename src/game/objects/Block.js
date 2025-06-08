@@ -40,7 +40,7 @@ export class Block extends Phaser.Physics.Arcade.Sprite {
 
         // 씬에 이 블록 객체를 추가하고 물리엔진을 활성화합니다.
         scene.add.existing(this);
-        scene.physics.add.existing(this, true); // true는 static body로 만듭니다.
+        // scene.physics.add.existing(this, true); // true는 static body로 만듭니다.
     }
 
     hit() {
