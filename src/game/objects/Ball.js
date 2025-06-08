@@ -36,12 +36,15 @@ export class Ball {
         this.sprite.setBounce(1);
     }
 
-    
+    destroy() {
+        // 이 Ball 객체가 관리하는 sprite를 파괴합니다.
+        this.sprite.destroy();
+    }
 
     getPosition() {
         return { x: this.sprite.x, y: this.sprite.y };
     }
-    
+
     isFall() {
         const pos = this.getPosition();
         if (pos.y > this.scene.sys.game.config.height) {

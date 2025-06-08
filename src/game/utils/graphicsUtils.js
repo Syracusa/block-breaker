@@ -70,4 +70,6 @@ export function createItemTextures(scene) {
     createTexture('item_PADDLE_WIDER', 0x0000ff, 'W', '#fff');
     createTexture('item_BALL_FASTER', 0xff0000, 'F', '#fff');
     createTexture('item_EXTRA_SCORE', 0xffff00, '$', '#000');
+    createTexture('item_MULTI_BALL', 0x20c20e, 'M', '#fff'); // ◀️ 멀티볼(M) 텍스처 추가
+
 }

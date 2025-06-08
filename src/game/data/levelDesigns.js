@@ -3,7 +3,7 @@ import { ITEM_TYPES } from './itemTypes.js';
 
 
 const level1 = [
-    [0, 1, { type: 2, item: ITEM_TYPES.PADDLE_WIDER }, 1, { type: 2, item: ITEM_TYPES.BALL_FASTER }, 1, 0],
+    [0, 1, { type: 2, item: ITEM_TYPES.PADDLE_WIDER }, 1, { type: 2, item: ITEM_TYPES.MULTI_BALL }, 1, 0],
     [1, 2, 1, { type: 1, item: ITEM_TYPES.EXTRA_SCORE }, 1, 2, 1],
     [1, 1, 2, 1, 2, 1, 1],
     [0, 1, 1, 2, 1, 1, 0],

@@ -38,7 +38,7 @@ export class Game extends Scene {
 
     _initVars() {
         this.walls = null;
-        this.ball = null;
+        this.balls = [];
         this.paddle = null;
         this.cursors = null;
         this.blocksGroup = null;
@@ -56,7 +56,7 @@ export class Game extends Scene {
 
     _createCoreObjects() {
         this.walls = new Walls(this);
-        this.ball = new Ball(this);
+        this.balls.push(new Ball(this)); // ◀️ 배열에 첫 번째 공 추가
         this.paddle = new Paddle(this);
     }
 
@@ -69,20 +69,41 @@ export class Game extends Scene {
         this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
     }
 
+    /**
+     * 공 스프라이트 하나에 대한 모든 충돌 규칙을 설정합니다.
+     * @param {Phaser.Physics.Arcade.Sprite} ballSprite - 충돌을 설정할 공 스프라이트
+     */
+    _addCollidersForBall(ballSprite) {
+        this.physics.add.collider(ballSprite, this.walls.wallStaticGroup, this.handleBallWallCollision, null, this);
+        this.physics.add.collider(ballSprite, this.blocksGroup, this.hitBlock, null, this);
+        this.physics.add.collider(ballSprite, this.paddle.sprite, this.hitPaddle, null, this);
+    }
+
     _setupPhysics() {
-        this.physics.add.collider(this.ball.sprite, this.walls.wallStaticGroup, this.handleBallWallCollision, null, this);
-        this.physics.add.collider(this.ball.sprite, this.blocksGroup, this.hitBlock, null, this);
-        this.physics.add.collider(this.ball.sprite, this.paddle.sprite, this.hitPaddle, null, this);
+        this.balls.forEach(ball => {
+            this._addCollidersForBall(ball.sprite);
+        });
+
         this.physics.add.overlap(this.paddle.sprite, this.itemsGroup, this.collectItem, null, this);
     }
 
     // --- 업데이트 헬퍼 함수들 ---
-
     _checkBallFall() {
-        if (this.ball.isFall()) {
+        // filter를 사용해 떨어진 공을 제외한 새 배열을 만듭니다.
+        this.balls = this.balls.filter(ball => {
+            if (ball.isFall()) {
+                ball.destroy(); // 공의 스프라이트 파괴
+                return false; // 이 공은 새 배열에서 제외
+            }
+            return true; // 이 공은 유지
+        });
+
+        // 배열의 길이가 0이면 (모든 공이 떨어졌으면) 게임오버
+        if (this.balls.length === 0) {
             this.scene.start('GameOver', { score: this.score });
         }
     }
+
 
     _cleanupItems() {
         this.itemsGroup.getChildren().forEach(item => {
