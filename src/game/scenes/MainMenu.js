@@ -25,6 +25,14 @@ export class MainMenu extends Scene {
         }).setOrigin(0.5);
 
         this.input.once('pointerdown', () => {
+                   
+            console.log(`Sound context state: ${this.sound.context.state}`);
+            // 현재 사운드 시스템이 '일시정지(suspended)' 상태인지 확인합니다.
+            if (this.sound.context.state === 'suspended') {
+                // 만약 잠겨있다면, 소리 시스템을 '깨웁니다(resume)'.
+                this.sound.context.resume();
+            }
+
             this.sound.play('ui_click');
             this.scene.start('LevelSelect'); // 레벨 선택 씬으로 시작
         });
