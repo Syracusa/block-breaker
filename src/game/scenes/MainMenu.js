@@ -25,12 +25,13 @@ export class MainMenu extends Scene {
         }).setOrigin(0.5);
 
         this.input.once('pointerdown', () => {
-                   
-            console.log(`Sound context state: ${this.sound.context.state}`);
-            // 현재 사운드 시스템이 '일시정지(suspended)' 상태인지 확인합니다.
+            console.log('Start Button Clicked on Mobile!');
+            console.log('1. Current sound context state:', this.sound.context.state);
+
             if (this.sound.context.state === 'suspended') {
-                // 만약 잠겨있다면, 소리 시스템을 '깨웁니다(resume)'.
-                this.sound.context.resume();
+                this.sound.context.resume().then(() => {
+                    console.log('2. Sound context resumed successfully!');
+                }).catch(e => console.error('3. Error resuming sound context:', e));
             }
 
             this.sound.play('ui_click');
