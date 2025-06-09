@@ -38,10 +38,28 @@ export class Paddle {
      * 이 함수는 Game.js의 update 루프에서 매 프레임 호출됩니다.
      */
     update() {
+        // --- 1. 키보드 입력 확인 (기존 로직) ---
         if (this.cursors.left.isDown) {
             this.sprite.setVelocityX(-this.speed);
         } else if (this.cursors.right.isDown) {
             this.sprite.setVelocityX(this.speed);
+
+            // --- ▼▼▼ 2. 터치 또는 마우스 입력 확인 (새로 추가된 로직) ▼▼▼ ---
+            // 키보드가 눌리지 않았고, 화면이 터치(클릭)되고 있는 경우
+        } else if (this.scene.input.activePointer.isDown) {
+            const touchX = this.scene.input.activePointer.x;
+            const screenCenterX = this.scene.sys.game.config.width / 2;
+
+            // 터치 위치가 화면의 왼쪽 절반이면 왼쪽으로 이동
+            if (touchX < screenCenterX) {
+                this.sprite.setVelocityX(-this.speed);
+            }
+            // 터치 위치가 화면의 오른쪽 절반이면 오른쪽으로 이동
+            else {
+                this.sprite.setVelocityX(this.speed);
+            }
+
+            // --- 3. 아무 입력도 없을 때 (기존 로직) ---
         } else {
             this.sprite.setVelocityX(0);
         }
